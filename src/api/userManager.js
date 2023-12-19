@@ -12,6 +12,31 @@ export default {
             data: teacherQuery
           })
     },
+    deleteUserList(uid){
+      return request({
+        url: '/rest/users/delete-user',
+        method: 'delete',
+        params:{
+          uid
+        }
+      })
+    },
+    updateUser(data){
+      return request({
+        url: '/rest/users/update-user',
+        method: 'post',
+        data:data
+      })
+    },
+    getUserrList(offset,limit){
+        return request({
+          url: '/rest/users/find-users',
+          method: 'get',
+          params:{
+            offset,limit
+          }
+        })
+      },
     //删除讲师
     deleteTeacherId(id) {
         return request({

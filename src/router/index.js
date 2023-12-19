@@ -238,31 +238,31 @@ export const constantRoutes = [
             }
         ]
     },
-    {
-        path: '/userManage',
-        component: Layout,
-        redirect: '/userManage/list',
-        name: '数据管理',
-        meta: { title: '数据管理', icon: 'example', roles: ['admin'] },
-        children: [
+    // {
+    //     path: '/userManage',
+    //     component: Layout,
+    //     redirect: '/userManage/list',
+    //     name: '数据管理',
+    //     meta: { title: '数据管理', icon: 'example', roles: ['admin'] },
+    //     children: [
 
-            {
-                path: 'list',
-                name: '数据管理',
-                component: () =>
-                    import('@/views/userManage/list'),
-                meta: { title: '数据管理', icon: 'tree', roles: ['admin'] }
-            },
-            {
-                path: 'edituser/:id',
-                name: 'EduTeacherEdit',
-                component: () =>
-                    import('@/views/userManage/save'),
-                meta: { title: '数据管理', noCache: true, roles: ['admin'] },
-                hidden: true
-            }
-        ]
-    },
+    //         {
+    //             path: 'list',
+    //             name: '数据管理',
+    //             component: () =>
+    //                 import('@/views/userManage/list'),
+    //             meta: { title: '数据管理', icon: 'tree', roles: ['admin'] }
+    //         },
+    //         {
+    //             path: 'edituser/:id',
+    //             name: 'EduTeacherEdit',
+    //             component: () =>
+    //                 import('@/views/userManage/save'),
+    //             meta: { title: '数据管理', noCache: true, roles: ['admin'] },
+    //             hidden: true
+    //         }
+    //     ]
+    // },
     {
         path: 'external-link',
         component: Layout,

@@ -52,8 +52,7 @@ body>.el-container {
                                         :value="item.label" />
                                 </el-select>
                             </el-form-item>
-                            <el-button type="primary" icon="el-icon-search"
-                                @click="showChart(); showChart1(); showChart4(); showChart5()">生成</el-button>
+                            <el-button type="primary" icon="el-icon-search" @click="reinit()">生成</el-button>
                         </el-form>
                     </el-row>
                 </el-card>
@@ -112,7 +111,7 @@ export default {
                 value: '全部',
                 label: '全部'
             }],
-            insurance:'天天保',
+            insurance: '全部',
             btnDisabled: false,
             xData: [],
             yData: [],
@@ -121,7 +120,7 @@ export default {
             dataList: [],
             dataprovice: [],
             mapData: {},
-            insuranceInit: ''
+            insuranceInit: '全部'
         }
     },
     created() { //页面渲染之前执行
@@ -133,235 +132,71 @@ export default {
     watch: {  //监听
     },
     methods: {
-        showChart() {
-            staApi.avatarEveryUserAvatar(this.insurance)
+        reinit() {
+            this.insuranceInit = this.insurance
+            this.showChart6();
+            this.showChart7();
+            this.showChart8();
+            this.showChart9();
+        },
+        showChart6() {//▎性别分布
+            staApi.injuryEveryUserInjury(this.insuranceInit)
                 .then(response => {
-                    this.num = response.data.EveryUserAvatar.length
+                    // console.log('avatarEveryUserAvatar1',response)
+                    //this.num = response.data.EveryUserAvatar.length
                     //pieData=EveryUserInjury
-                    let xData = response.data.EveryUserAvatar.map(element => element.name)
-                    let yData = response.data.EveryUserAvatar.map(element => element.value)
-                    console.log(xData)
-                    console.log(yData)
-                    this.xData = xData
-                    this.yData = yData
-                    //调用下面生成图表的方法，改变值
-                    this.setChart()
-                })
-        },
-        showChart1() {
-            staApi.ageEveryUserAge(this.insurance)
-                .then(response => {
-                    // console.log(this.insurance)
-                    this.num = response.data.EveryUserAge.length
-                    this.source = response.data.EveryUserAge
-                    this.pieData = response.data.EveryUserAge
-                    //console.log(this.source)
-                    this.setChart1()
-                })
-        },
-        showChart5() {
-            staApi.genderEveryUserGender(this.insurance)
-                .then(response => {
-                    // console.log(response)
-                    console.log(response.data.EveryUserGender.length)
-                    this.num = response.data.EveryUserGender.length
-
-                    this.pieData = response.data.EveryUserGender
-                    //调用下面生成图表的方法，改变值
-                    this.setChart5()
-                })
-        },
-        showChart4() {
-            // 行业分布
-            staApi.injuryEveryUserInjury(this.insurance)
-                .then(response => {
-                    // console.log(response)
-                    console.log(response.data.EveryUserInjury.length)
-                    this.num = response.data.EveryUserInjury.length
-                    this.pieData = response.data.EveryUserInjury
-                    //调用下面生成图表的方法，改变值
-                    this.setChart4()
-                })
-        },
-        showChart6() {
-            staApi.avatarEveryUserAvatar(this.insuranceInit)
-                .then(response => {
-                    this.num = response.data.EveryUserAvatar.length
-                    //pieData=EveryUserInjury
-                    let xData = response.data.EveryUserAvatar.map(element => element.name)
-                    let yData = response.data.EveryUserAvatar.map(element => element.value)
-                    console.log(xData)
-                    console.log(yData)
-                    this.xData = xData
-                    this.yData = yData
+                    // let xData = response.data.EveryUserInjuryList.map(element => element.name)
+                    // let yData = response.data.EveryUserInjuryList.map(element => element.value)
+                    // console.log(xData)
+                    this.source = response.data.EveryUserInjuryList
+                    this.pieData = response.data.EveryUserInjuryList
+                    // console.log(yData)
+                    // this.xData = xData
+                    // this.yData = yData
                     //调用下面生成图表的方法，改变值
                     this.setChart6()
                 })
         },
-        showChart7() {
-            //伤情分布
-            staApi.ageEveryUserAge(this.insuranceInit)
+        showChart9() {//▎行业分布
+            staApi.avatarEveryUserAvatar(this.insuranceInit)
                 .then(response => {
-                    // console.log(this.insurance)
-                    this.num = response.data.EveryUserAge.length
-                    this.source = response.data.EveryUserAge
-                    this.pieData = response.data.EveryUserAge
-                    //console.log(this.source)
-                    this.setChart7()
-                })
-        },
-        showChart8() {
-            staApi.genderEveryUserGender(this.insuranceInit)
-                .then(response => {
-                    // console.log(response)
-                    console.log(response.data.EveryUserGender.length)
-                    this.num = response.data.EveryUserGender.length
-
-                    this.pieData = response.data.EveryUserGender
-                    //调用下面生成图表的方法，改变值
-                    this.setChart8()
-                })
-        },
-        showChart9() {
-            staApi.injuryEveryUserInjury(this.insuranceInit)
-                .then(response => {
-                    // console.log(response)
-                    console.log(response.data.EveryUserInjury.length)
-                    this.num = response.data.EveryUserInjury.length
-                    let xData = response.data.EveryUserInjury.map(element => element.name)
-                    let yData = response.data.EveryUserInjury.map(element => element.value)
+                    // console.log('injuryEveryUserInjury4',response)
+                    // console.log(response.data.EveryUserInjury.length)
+                    //this.num = response.data.EveryUserInjury.length
+                    let xData = response.data.EveryUserAvatarList.map(element => element.insurance)
+                    let yData = response.data.EveryUserAvatarList.map(element => element.value)
                     this.xData = xData
                     this.yData = yData
                     //调用下面生成图表的方法，改变值
                     this.setChart9()
                 })
         },
-        setChart5() {
-            // 基于准备好的dom，初始化echarts实例
-            this.chart5 = echarts.init(document.getElementById('chart4'), 'light')
-            // console.log(this.chart)
-
-            // 指定图表的配置项和数据
-            var option = {
-                //backgroundColor: '#2c343c',
-                title: {
-                    text: '▎性别分布'
-                },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/>{b} : {c} ({d}%)'
-                },
-                //系列列表。每个系列通过 type 决定自己的图表类型
-                series: [{
-                    // 系列中的数据内容数组
-                    data: this.pieData,
-                    // 折线图
-                    type: 'pie',
-                    label: {
-                        show: true
-                    },
-                }]
-            }
-
-            this.chart5.setOption(option)
+        showChart7() {//▎伤情分布
+            //伤情分布
+            staApi.ageEveryUserAge(this.insuranceInit)
+                .then(response => {
+                    console.log('ageEveryUserAge2', response)
+                    //this.num = response.data.EveryUserAge.length
+                    this.source = response.data.EveryUserAgeList
+                    this.pieData = response.data.EveryUserAgeList
+                    //console.log(this.source)
+                    this.setChart7()
+                })
         },
-        setChart4() {
-            // 基于准备好的dom，初始化echarts实例
-            this.chart4 = echarts.init(document.getElementById('chart3'))
-            // console.log(this.chart)
-
-            // 指定图表的配置项和数据
-            var option = {
-                //backgroundColor: '#2c343c',
-                title: {
-                    text: '▎伤情分布'
-                },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/>{b} : {c} ({d}%)'
-                },
-                //系列列表。每个系列通过 type 决定自己的图表类型
-                series: [{
-                    // 系列中的数据内容数组
-                    data: this.pieData,
-                    // 折线图
-                    type: 'pie',
-                    label: {
-                        show: true
-                    },
-                }]
-            }
-
-            this.chart4.setOption(option)
+        showChart8() {//▎年龄分布
+            staApi.genderEveryUserGender(this.insuranceInit)
+                .then(response => {
+                    console.log('genderEveryUserGender3', response)
+                    //console.log(response.data.EveryUserGender.length)
+                    // this.num = response.data.EveryUserGender.length
+                    this.source = response.data.EveryUserGenderList
+                    this.pieData = response.data.EveryUserGenderList
+                    //调用下面生成图表的方法，改变值
+                    this.setChart8()
+                })
         },
-        setChart1() {
-            // 基于准备好的dom，初始化echarts实例
-            this.chart1 = echarts.init(document.getElementById('map'))
-            //console.log(this.chart)
 
-            // 指定图表的配置项和数据
-            var option = {
-                //backgroundColor: '#2c343c',
-                title: {
-                    text: '▎年龄分布'
-                },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/>{b} : {c} ({d}%)'
-                },
-                //系列列表。每个系列通过 type 决定自己的图表类型
-                series: [{
-                    // 系列中的数据内容数组
-                    data: this.pieData,
-                    // 折线图
-                    type: 'pie',
-                    label: {
-                        show: true
-                    },
-                }]
-            }
-            option && this.chart1.setOption(option)
-        },
-        setChart() {
-            // 基于准备好的dom，初始化echarts实例
-            this.chart = echarts.init(document.getElementById('chart'))
-            // console.log(this.chart)
 
-            // 指定图表的配置项和数据
-            var option = {
-                title: {
-                    text: '▎行业分布'
-                },
-                tooltip: {
-                    trigger: 'axis'
-                },
-                // x轴是类目轴（离散数据）,必须通过data设置类目数据
-                xAxis: {
-                    type: 'category',
-                    data: this.xData,
-                    axisLabel: {
-                        interval: 0,
-                        rotate: 60,
-                        fontSize: 10,
-                        color: "rgba(40, 37, 37, 1)",
-                        fontWeight: "bolder"
-                    }
-                },
-                // y轴是数据轴（连续数据）
-                yAxis: {
-                    type: 'value'
-                },
-                // 系列列表。每个系列通过 type 决定自己的图表类型
-                series: [{
-                    // 系列中的数据内容数组
-                    data: this.yData,
-                    // 折线图
-                    type: 'bar'
-                }]
-            }
-
-            this.chart.setOption(option)
-        },
         setChart6() {
             // 基于准备好的dom，初始化echarts实例
             this.chart6 = echarts.init(document.getElementById('chart4'), 'light')
@@ -371,7 +206,7 @@ export default {
             var option = {
                 //backgroundColor: '#2c343c',
                 title: {
-                    text: '▎性别分布'
+                    text: '▎伤情分布'
                 },
                 tooltip: {
                     trigger: 'item',
@@ -400,7 +235,7 @@ export default {
             var option = {
                 //backgroundColor: '#2c343c',
                 title: {
-                    text: '▎伤情分布'
+                    text: '▎年龄分布'
                 },
                 tooltip: {
                     trigger: 'item',
@@ -429,7 +264,7 @@ export default {
             var option = {
                 //backgroundColor: '#2c343c',
                 title: {
-                    text: '▎年龄分布'
+                    text: '▎性别分布'
                 },
                 tooltip: {
                     trigger: 'item',
@@ -456,7 +291,7 @@ export default {
             // 指定图表的配置项和数据
             var option = {
                 title: {
-                    text: '▎行业分布'
+                    text: '▎职业分布'
                 },
                 tooltip: {
                     trigger: 'axis'

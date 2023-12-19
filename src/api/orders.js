@@ -1,6 +1,39 @@
 import request from '@/utils/request'
 
 export default {
+  getOrderList(offset,limit){
+    return request({
+      url: '/rest/orders/find-orders',
+      method: 'get',
+      params:{
+        offset,limit
+      }
+    })
+  },
+  deleteOrderList(uid,mid){
+    return request({
+      url: '/rest/orders/delete-order',
+      method: 'delete',
+      params:{
+        uid,mid
+      },
+      headers:{
+        // 'X-HTTP-Method-Override' : 'DELETE' //同时将method替换为 post
+        'Access-Control-Allow-Origin': '*'
+      }
+    })
+  },
+  getOrderById(uid){
+    return request({
+      url: '/rest/orders/find-order',
+      method: 'get',
+      params:{
+        uid
+      }
+    })
+  },
+
+
     //生成订单
   createOrders(courseId) {
     return request({

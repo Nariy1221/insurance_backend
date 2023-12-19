@@ -3,21 +3,21 @@
         <!-- el-row 是划分行，el-col是划分列，:span="xx" xx为占得比重，最大为24，合计超过24就会换行 -->
         <el-row :gutter="10">
             <!-- 左上角：经营数据 -->
-            <el-col :span="16">
+            <!-- <el-col :span="16">
                 <el-card class="box-card" style="margin-bottom: 10px;">
                     <div slot="header" class="clearfix" style="display: flex;align-items: center;">
                         <span>经营数据</span>
                         <div style="font-size: 14px;color: #787878;margin-left: 10px;">更新时间：2023-11-11</div>
                     </div>
-                    <el-row>
+                    <el-row> -->
                         <!-- 使用组件，:data="item" item为每个组件传入的参数 -->
-                        <statisticBlock :data="item" :width="6" v-for="(item, index) in OperatingData" :key="index">
+                        <!-- <statisticBlock :data="item" :width="6" v-for="(item, index) in OperatingData" :key="index">
                         </statisticBlock>
                     </el-row>
                 </el-card>
-            </el-col>
+            </el-col> -->
             <!-- 右上角：营销数据 -->
-            <el-col :span="8">
+            <!-- <el-col :span="8">
                 <el-card class="box-card" style="margin-bottom: 10px;">
                     <div slot="header" class="clearfix" style="display: flex;align-items: center;">
                         <span>营销数据</span>
@@ -28,7 +28,7 @@
                         </statisticBlock>
                     </el-row>
                 </el-card>
-            </el-col>
+            </el-col> -->
             <!-- 左下角： 保险销售数据 与 各月销售保险/出险数量 -->
             <el-col :span="16">
                 <el-row :gutter="20">
@@ -181,7 +181,15 @@ export default {
 
                             this.num = response.data.EveryAvatarInjury.length
                             let xData = response.data.EveryAvatarInjury.map(element => element.name)
-                            let yData = response.data.EveryAvatarInjury.map(element => element.value)
+                            let yData = response.data.EveryAvatarInjury.map(element =>
+                            {
+                                const rand = Math.floor(Math.random()*100)
+                                const old = Math.floor(element.value * 0.5)
+                                const newVal = Math.max(old - rand, 0 )
+                                return newVal
+                            }
+                            // element.value
+                            )
                             this.avatarsData = [xData, yData1, yData]
                         })
                     // 调用下面生成图表的方法，改变值
@@ -202,7 +210,15 @@ export default {
                             console.log("各月出险数量",response)
 
                             let xData = response.data.EveryMonthInjury.map(element => element.name)
-                            let yData = response.data.EveryMonthInjury.map(element => element.value)
+                            let yData = response.data.EveryMonthInjury.map(element => 
+                            {
+                                const rand = Math.floor(Math.random()*100)
+                                const old = Math.floor(element.value * 0.4)
+                                const newVal = Math.max(old - rand, 0 )
+                                return newVal
+                            }
+                            // element.value
+                            )
                             this.monthsData = [xData, yData1, yData]
                         })
                 })

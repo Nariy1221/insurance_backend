@@ -2,13 +2,13 @@
 <template>
     <div style="padding: 10px;">
         <el-row :gutter="10">
-            <el-col :span="windowSize[index]"  v-for="(item, index) in chartList" :key="index">
-                <el-card class="box-card" style="margin-bottom: 10px;"  @click="changeSize(index)">
+            <el-col :span="windowSize[index]" v-for="(item, index) in chartList" :key="index">
+                <el-card class="box-card" style="margin-bottom: 10px;" @click="changeSize(index)">
                     <!-- <div slot="header" class="clearfix" style="display: flex;align-items: center;">
                         <span >经营数据</span>
                         <div style="font-size: 14px;color: #787878;margin-left: 10px;">更新时间：2023-11-11</div>
                     </div> -->
-                    <el-row >
+                    <el-row>
                         <div :id="item.id" class="chart" style="height:300px;width:100%" />
                     </el-row>
                 </el-card>
@@ -20,6 +20,18 @@
 //import 'echarts/map/js/china.js' 
 import staApi from '@/api/seller'
 import * as echarts from 'echarts'
+let EveryInsurancePlan = [
+  { insurance: '天天保', name: '方案一', value: 111 },
+  { insurance: '天天保', name: '方案二', value: 111 },
+  { insurance: '全球保', name: '方案一', value: 111 },
+  { insurance: '全球保', name: '方案二', value: 222 },
+  { insurance: '即时保', name: '方案一', value: 111 },
+  { insurance: '即时保', name: '方案二', value: 444 },
+  { insurance: '雇主保', name: '方案一', value: 111 },
+  { insurance: '雇主保', name: '方案二', value: 111 },
+  { insurance: '灵工小保', name: '方案二', value: 222 },
+]
+
 export default {
     data() {
         return {
@@ -34,8 +46,8 @@ export default {
             mapData: {},
             source: [],
             windowSize: [16, 8, 16, 8],
-            firstHeight:'300px',
-            secondHeight:'300px',
+            firstHeight: '300px',
+            secondHeight: '300px',
             chartList: [
                 { id: 'chart3', },
                 { id: 'chart', },
@@ -54,12 +66,12 @@ export default {
     watch: {  //监听
     },
     methods: {
-        changeSize(val){
+        changeSize(val) {
             console.log(val)
-            if(val == 0|| val == 2){
-                this.windowSize = [16,8,16,8]
-            }else if(val == 1 || val == 3){
-                this.windowSize = [8,16,8,16]
+            if (val == 0 || val == 2) {
+                this.windowSize = [16, 8, 16, 8]
+            } else if (val == 1 || val == 3) {
+                this.windowSize = [8, 16, 8, 16]
             }
         },
         showChart() {
@@ -84,8 +96,14 @@ export default {
                 .then(response => {
                     console.log(response)
                     this.num = response.data.EveryInsurancePlan.length
-                    this.source = response.data.EveryInsurancePlan
-                    console.log('source', this.source)
+                    console.log(EveryInsurancePlan)
+                    if (response.data.EveryInsurancePlan[0].insurance === null) {
+                        this.source = EveryInsurancePlan
+                    }else{
+                        this.source = response.data.EveryInsurancePlan
+                    }
+
+                    // console.log('source', this.source)
                     let xData = response.data.EveryInsurancePlan.map(element => element.name)
                     let yData = response.data.EveryInsurancePlan.map(element => element.value)
                     this.xData = xData

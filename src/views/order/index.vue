@@ -82,42 +82,55 @@
               </el-table-column>
               <el-table-column label="保险名称" width="120">
                 <template slot-scope="scope">
-                  <el-link style="color:#6a9df7">{{ scope.row.insuranceName }}</el-link>
+                  <el-link style="color:#6a9df7">{{ scope.row.insurance_id }}</el-link>
                 </template>
               </el-table-column>
-              <el-table-column prop="insuranceStatus" label="状态">
+              <!-- <el-table-column prop="insuranceStatus" label="状态">
+              </el-table-column> -->
+              <el-table-column prop="amount" label="价格(元)" sortable width="150">
               </el-table-column>
-              <el-table-column prop="insurancePrice" label="价格(元)">
-              </el-table-column>
-              <el-table-column label="下单日期" width="120">
-                <template slot-scope="scope">{{ scope.row.orderDate }}</template>
-              </el-table-column>
-              <el-table-column prop="orderCode" label="订单号" width="150">
-              </el-table-column>
-              <el-table-column prop="orderMethod" label="付款方式">
+              <el-table-column label="下单日期" width="200" sortable >
                 <template slot-scope="scope">
-                  <el-tag :type="scope.row.orderMethod == '支付宝' ? '' : 'success'">{{ scope.row.orderMethod }}</el-tag>
+                  
+                  {{ scope.row.create_time||scope.row.create_time==null?'—':scope.row.create_time }}</template>
+              </el-table-column>
+              <el-table-column prop="code" label="订单号" width="150">
+                <template slot-scope="scope">
+                  
+                  {{ scope.row.code||scope.row.code==null?'—':scope.row.code }}</template>
+              </el-table-column>
+              <el-table-column label="投保人姓名" width="150">
+                <template slot-scope="scope">{{ scope.row.customer_id }}</template>
 
+              </el-table-column>
+              <el-table-column prop="payment_type" label="付款方式">
+                <template slot-scope="scope">
+                  <el-tag v-if="scope.row.status == '完成'" :type="scope.row.payment_type == '支付宝' ? '' : 'success'">{{ scope.row.payment_type }}</el-tag>
+                  <div v-else>—</div>
                 </template>
               </el-table-column>
-              <el-table-column prop="payMoney" label="实付金额(元)">
+              <el-table-column prop="status" label="状态">
+                <template slot-scope="scope">
+                  <el-tag :type="scope.row.status == '完成' ? '' : 'success'">{{ scope.row.status ? scope.row.status : '未完成'
+                  }}</el-tag>
+                </template>
               </el-table-column>
-              <el-table-column label="投保人/被投保人姓名" width="150">
-                <template slot-scope="scope">{{ scope.row.applicant }} / {{ scope.row.Insured }}</template>
+              <el-table-column prop="amount" label="实付金额(元)" sortable width="150">
+              </el-table-column>
 
-              </el-table-column>
               <el-table-column label="操作" width="100" fixed="right">
                 <template slot-scope="scope">
                   <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                  <el-button type="text" size="small">删除</el-button>
+                  <el-button type="text" size="small" style="color: rgb(249, 131, 110);"
+                    @click="handleDelete(scope.row)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
           </el-col>
           <el-col :span="24" style="text-align: center;margin-top: 10px;">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-              :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="10"
-              layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
+              :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="limit"
+              layout="total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
           </el-col>
         </el-row>
@@ -129,7 +142,7 @@
   </el-row>
 </template>
 <script>
-
+import ordersAPI from '@/api/orders'
 export default {
   data() {
     return {
@@ -144,7 +157,7 @@ export default {
         orderType: '全部',
         orderStatus: '已完成',
       },
-      currentPage:1,
+      currentPage: 1,
       isCollapsed: true,
       serchOption: [
         { label: "交易单号", value: '交易单号' },
@@ -234,15 +247,67 @@ export default {
             picker.$emit('pick', [start, end]);
           }
         }]
-      }
+      },
+      offset: 0,
+      limit: 10,
+      total:200
     }
   },
   created() { //页面渲染之前执行
-
+    this.init()
   },
   watch: {  //监听
   },
   methods: {
+    init() {
+      this.fetchData(this.offset,this.limit)
+    },
+    handleCurrentChange(val){
+      this.offset = val
+      let offset = (this.offset - 1)*this.limit
+      if(offset < 0) offset = 0
+      this.fetchData(offset,this.limit)
+      console.log("当前页面",val)
+    },
+    handleSizeChange(val){
+      this.limit = val
+      let offset = (this.offset - 1)*this.limit
+      if(offset < 0) offset = 0
+      this.fetchData(offset,this.limit)
+      console.log("大小变为",val)
+
+    },
+    fetchData(offset,limit){
+      ordersAPI.getOrderList(offset, limit).then(response => {
+        console.log("orderList", response)
+        this.total = response.data.total?response.data.total:200
+        this.num = response.data.order.length
+        this.tableData = response.data.order
+      })
+    },
+    handleDelete(item) {
+      console.log(item)
+      this.$confirm('是否删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        ordersAPI.deleteOrderList(item.customer_id, item.insurance_id).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+
+        })
+
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+    },
     collapseSeach() {
       this.isCollapsed = !this.isCollapsed
     },

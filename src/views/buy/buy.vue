@@ -45,13 +45,13 @@
         </el-card>
       </el-col>
       <el-col :span="12">
-        <el-card class="box-card" style="margin-bottom: 10px;height:600px;text-align: center;">
+        <el-card class="box-card" style="margin-bottom: 10px;text-align: center;">
           <div slot="header" class="clearfix" style="display: flex;align-items: center;">
             <span>数据表格</span>
             <div style="font-size: 14px;color: #787878;margin-left: 10px;">更新时间：2023-11-11</div>
           </div>
           <el-row>
-            <el-table :data="tabelDate" style="width: 100%;height: 100%;" show-summary border
+            <el-table :data="tabelDate" style="width: 100%;height: 100%;text-align: center;" show-summary border
               :default-sort="{ prop: 'perp', order: 'descending' }">
               <el-table-column type="index" width="50">
               </el-table-column>
@@ -74,7 +74,8 @@
   </div>
 </template>
 <script>
-import staApi from '@/api/buy'
+// import staApi from '@/api/buy'
+import staApi from '@/api/sta'
 import * as echarts from 'echarts'
 export default {
   data() {
@@ -323,16 +324,32 @@ export default {
       provinceInit: 'a',
       staInit: '',
       sum: 0,
-      tabelDate:[]
+      tabelDate: []
 
     }
   },
   created() { //页面渲染之前执行
-    this.showChart6();
+    this.showdefault();
+    // this.showChart6();
   },
   watch: {  //监听
   },
   methods: {
+    showdefault() {
+      staApi.insuranceEveryInsurance()
+        .then(response => {
+          console.log("保险种类销售数量", response)
+          let xData = response.data.EveryInsurance.map(element => element.name)
+          let yData = response.data.EveryInsurance.map(element => element.value)
+          this.pieData = response.data.EveryInsurance
+          this.tabelDate = []
+          this.sum = this.pieData.reduce((sum, e) => sum + Number(e.value || 0), 0)
+          this.pieData.map((item, index) => {
+            this.tabelDate.push(Object.assign({}, item, { pct: ((item.value / this.sum) * 100).toFixed(2) }))
+          })
+          this.setChart6()
+        })
+    },
     showChart5() {
       staApi.createUserCommend(this.gender, this.avatar, this.province, this.sta)
         .then(response => {
@@ -357,70 +374,70 @@ export default {
           this.pieData.map((item, index) => {
             this.tabelDate.push(Object.assign({}, item, { pct: ((item.value / this.sum) * 100).toFixed(2) }))
           })
-      //调用下面生成图表的方法，改变值
-      this.setChart6()
-    })
-  },
-  setChart5() {
-    // 基于准备好的dom，初始化echarts实例
-    this.chart5 = echarts.init(document.getElementById('chart'), 'light')
-    // console.log(this.chart)
+          //调用下面生成图表的方法，改变值
+          this.setChart6()
+        })
+    },
+    setChart5() {
+      // 基于准备好的dom，初始化echarts实例
+      this.chart5 = echarts.init(document.getElementById('chart'), 'light')
+      // console.log(this.chart)
 
-    // 指定图表的配置项和数据
-    var option = {
-      //backgroundColor: '#2c343c',
-      // title: {
-      //     text: '▎性别分布'
-      // },
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)'
-      },
-      //系列列表。每个系列通过 type 决定自己的图表类型
-      series: [{
-        // 系列中的数据内容数组
-        data: this.pieData,
-        // 折线图
-        type: 'pie',
-        label: {
-          show: true
+      // 指定图表的配置项和数据
+      var option = {
+        //backgroundColor: '#2c343c',
+        // title: {
+        //     text: '▎性别分布'
+        // },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
-        center: ["50%", '50%']
-      }]
-    }
+        //系列列表。每个系列通过 type 决定自己的图表类型
+        series: [{
+          // 系列中的数据内容数组
+          data: this.pieData,
+          // 折线图
+          type: 'pie',
+          label: {
+            show: true
+          },
+          center: ["50%", '50%']
+        }]
+      }
 
-    this.chart5.setOption(option)
-  },
-  setChart6() {
-    // 基于准备好的dom，初始化echarts实例
-    this.chart6 = echarts.init(document.getElementById('chart'), 'light')
-    // console.log(this.chart)
+      this.chart5.setOption(option)
+    },
+    setChart6() {
+      // 基于准备好的dom，初始化echarts实例
+      this.chart6 = echarts.init(document.getElementById('chart'), 'light')
+      // console.log(this.chart)
 
-    // 指定图表的配置项和数据
-    var option = {
-      //backgroundColor: '#2c343c',
-      // title: {
-      //     text: '▎性别分布'
-      // },
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)'
-      },
-      //系列列表。每个系列通过 type 决定自己的图表类型
-      series: [{
-        // 系列中的数据内容数组
-        data: this.pieData,
-        // 折线图
-        type: 'pie',
-        label: {
-          show: true
+      // 指定图表的配置项和数据
+      var option = {
+        //backgroundColor: '#2c343c',
+        // title: {
+        //     text: '▎性别分布'
+        // },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
-        center: ["50%", '50%']
-      }]
-    }
+        //系列列表。每个系列通过 type 决定自己的图表类型
+        series: [{
+          // 系列中的数据内容数组
+          data: this.pieData,
+          // 折线图
+          type: 'pie',
+          label: {
+            show: true
+          },
+          center: ["50%", '50%']
+        }]
+      }
 
-    this.chart6.setOption(option)
+      this.chart6.setOption(option)
+    }
   }
-}
 }
 </script>
